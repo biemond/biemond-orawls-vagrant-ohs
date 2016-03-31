@@ -1,0 +1,79 @@
+---
+
+logoutput:                &logoutput                true
+
+wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
+wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+wls_version:              &wls_version              1212
+
+# global OS vars
+wls_os_user:              &wls_os_user              "oracle"
+wls_os_group:             &wls_os_group             "dba"
+wls_download_dir:         &wls_download_dir         "/var/tmp/install"
+wls_source:               &wls_source               "/software"
+wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/latest"
+wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
+
+domain_name:                &domain_name                "Wls1212"
+domain_adminserver:         &domain_adminserver         "AdminServer"
+domain_adminserver_port:    &domain_adminserver_port    7001
+domain_nodemanager_port:    &domain_nodemanager_port    5556
+domain_wls_password:        &domain_wls_password        "weblogic1"
+
+domain_adminserver_address: &domain_adminserver_address "10.10.10.35"
+
+hosts:
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+  'ohs1212.example.com':
+    ip:                '10.10.10.35'
+    host_aliases:      'ohs1212'
+
+file_oracle:
+   '/opt/oracle':
+      ensure:     directory
+      recurse:    false
+      replace:    false
+      mode:       '0775'
+      owner:      *wls_os_user
+      group:      *wls_os_group
+
+fmw_installations:
+  'webtier1212':
+    fmw_product:             "web"
+    ohs_mode:                "standalone"
+    fmw_file1:               "ofm_ohs_linux_12.1.2.0.0_64_disk1_1of1.zip"
+    log_output:              true
+    remote_file:             false
+
+domain_instances:
+  'Wls1221':
+    domain_template:                       "ohs_standalone"
+    development_mode:                      false
+    ohs_standalone_listen_address:         *domain_adminserver_address
+    ohs_standalone_listen_port:            8080
+    ohs_standalone_ssl_listen_port:        8081
+    nodemanager_password:                  *domain_wls_password
+    nodemanager_username:                  *wls_weblogic_user
+    log_output:                            *logoutput
+
+nodemanager_instances:
+  'nodemanager':
+    ohs_standalone:                        true
+    log_output:                            *logoutput
+    log_file:                              'nodemanager_wls1212.log'
+    nodemanager_address:                   *domain_adminserver_address
+    sleep:                                 21
+
+# startup adminserver for extra configuration
+control_instances:
+  'startOHS1server':
+     domain_name:                 *domain_name
+     server_type:                 'ohs_standalone'
+     target:                      'Server'
+     server:                      'ohs1'
+     action:                      'start'
+     log_output:                  *logoutput
