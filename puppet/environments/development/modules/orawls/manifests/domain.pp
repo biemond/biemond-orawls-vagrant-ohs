@@ -156,7 +156,12 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub.1.0.0_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.3.jar"
 
-      $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
+      if $domain_template == 'ohs_standalone' {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template_12.1.3.jar"
+      }
+      else {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
+      }
       $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.3.jar"
       $templateESS_EM    = "${middleware_home_dir}/em/common/templates/wls/oracle.em_ess_template_12.1.3.jar"
       $templateESS       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.ess.basic_template_12.1.3.jar"
@@ -183,7 +188,12 @@ define orawls::domain (
       } else {
         $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template.jar"
         $templateJRF       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template.jar"
-        $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template.jar"
+        if $domain_template == 'ohs_standalone' {
+          $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template.jar"
+        }
+        else {
+          $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template.jar"
+        }
       }
 
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub_template.jar"
