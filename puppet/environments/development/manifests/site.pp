@@ -11,6 +11,7 @@ node 'default' {
   include domains
   include nodemanager
   include startwls
+  include ohs
 }
 
 # operating settings for Middleware
@@ -159,3 +160,14 @@ class startwls {
   create_resources('orawls::control',$control_instances, $default_params)
 }
 
+class ohs{
+  require startwls
+
+  $default_params = {}
+  $ohs_forwarder_instances = hiera('ohs_forwarder_instances', $default_params)
+  create_resources('orawls::ohs::forwarder',$ohs_forwarder_instances, $default_params)
+
+  # subscribe on ohs changes
+  $wls_ohs_servers = hiera('osh_reload_domain', {})
+  create_resources('wls_ohsserver',$wls_ohs_servers, $default_params)
+}

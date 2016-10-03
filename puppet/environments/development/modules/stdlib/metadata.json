@@ -257,7 +257,7 @@
     "lib/puppet/parser/functions/min.rb": "0d2a1b7e735ab251c5469e735fa3f4c6",
     "CONTRIBUTING.md": "fdddc4606dc3b6949e981e6bf50bc8e5"
   },
-  "version": "4.1.0",
+  "version": "4.9.0",
   "description": "Standard Library for Puppet Modules",
   "source": "git://github.com/puppetlabs/puppetlabs-stdlib.git",
   "project_page": "https://github.com/puppetlabs/puppetlabs-stdlib",

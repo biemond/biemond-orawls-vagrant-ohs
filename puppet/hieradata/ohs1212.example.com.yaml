@@ -16,6 +16,7 @@ wls_source:               &wls_source               "/software"
 wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/latest"
 wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
 
+
 domain_name:                &domain_name                "Wls1212"
 domain_adminserver:         &domain_adminserver         "AdminServer"
 domain_adminserver_port:    &domain_adminserver_port    7001
@@ -50,7 +51,7 @@ fmw_installations:
     remote_file:             false
 
 domain_instances:
-  'Wls1221':
+  'Wls1212':
     domain_template:                       "ohs_standalone"
     development_mode:                      false
     ohs_standalone_listen_address:         *domain_adminserver_address
@@ -65,7 +66,7 @@ nodemanager_instances:
     ohs_standalone:                        true
     log_output:                            *logoutput
     log_file:                              'nodemanager_wls1212.log'
-    nodemanager_address:                   *domain_adminserver_address
+    # nodemanager_address:                   *domain_adminserver_address
     sleep:                                 21
 
 # startup adminserver for extra configuration
@@ -77,3 +78,28 @@ control_instances:
      server:                      'ohs1'
      action:                      'start'
      log_output:                  *logoutput
+
+ohs_forwarder_instances:
+  '/console':
+      servers:    ['10.10.10.10:7001']
+      owner:       *wls_os_user
+      group:       *wls_os_group
+      domain_path: '/opt/oracle/middleware12c/user_projects/domains/Wls1212'
+      require:     Orawls::Control[startOHS1server]
+      notify:      Wls_ohsserver[reloadOHS1server]
+
+# subscribe on a ohs change and restart the ohs server
+osh_reload_domain:
+  'reloadOHS1server':
+     ensure:                    'running'
+     domain_name:               *domain_name
+     server_name:               'ohs1'
+     domain_path:               '/opt/oracle/middleware12c/user_projects/domains/Wls1212'
+     os_user:                   *wls_os_user
+     weblogic_home_dir:         *wls_weblogic_home_dir
+     weblogic_user:             *wls_weblogic_user
+     weblogic_password:         *domain_wls_password
+     jdk_home_dir:              *wls_jdk_home_dir
+     nodemanager_address:       *domain_adminserver_address
+     nodemanager_port:          *domain_nodemanager_port
+     refreshonly:               true
